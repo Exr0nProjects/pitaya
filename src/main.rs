@@ -2,23 +2,27 @@
 
 #[macro_use] extern crate rocket;
 
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 use rocket_contrib::json::Json;
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Task {
+    id: i32,
+}
 
 #[get("/")]
 fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[derive(Deserialize)]
-struct Task {
-    description: String,
-    complete: bool
-}
-
 #[post("/", data = "<task>")]
 fn new(task: Json<Task>) {
-    println!("Task {} has status {}", task.description, task.complete);
+    println!("Got stuff.");
+}
+
+#[post("/post")]
+fn posted() {
+    println!("Posted /post!");
 }
 
 fn main() {
