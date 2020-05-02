@@ -1,16 +1,4 @@
-// yoinked from https://github.com/SergioBenitez/Rocket/blob/v0.4/examples/json/src/main.rs on 2
-// May 2020
-#![feature(proc_macro_hygiene, decl_macro)]
-
-#[macro_use] extern crate rocket;
-#[macro_use] extern crate rocket_contrib;
-use serde::{Serialize, Deserialize};
-
-use std::sync::Mutex;
-use std::collections::HashMap;
-
-use rocket::State;
-use rocket_contrib::json::{Json, JsonValue};
+/*
 
 // The type to represent the ID of a message.
 type ID = usize;
@@ -24,7 +12,6 @@ struct Message {
     contents: String
 }
 
-// TODO: This example can be improved by using `route` with multiple HTTP verbs.
 #[post("/<id>", format = "json", data = "<message>")]
 fn new(id: ID, message: Json<Message>, map: State<MessageMap>) -> JsonValue {
     let mut hashmap = map.lock().expect("map lock.");
@@ -61,36 +48,42 @@ fn get(id: ID, map: State<MessageMap>) -> Option<Json<Message>> {
     })
 }
 
-#[catch(404)]
-fn not_found() -> JsonValue {
-    json!({
-        "status": "error",
-        "reason": "Resource was not found."
-    })
-}
+*/
 
-fn rocket() -> rocket::Rocket {
-    rocket::ignite()
-        .mount("/message", routes![new, update, get])
-        .register(catchers![not_found])
-        .manage(Mutex::new(HashMap::<ID, String>::new()))
-}
-
-fn main() {
-    rocket().launch();
-}
-
-/*
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
-
+#[macro_use] extern crate rocket_contrib;
 use serde::{Serialize, Deserialize};
-use rocket_contrib::json::Json;
+
+use std::sync::Mutex;
+use rocket::State;
+use rocket_contrib::json::{Json, JsonValue};
+
+extern crate chrono;
+use chrono::DateTime;
+
+use std::collections::HashMap;
+use std::vec;
+
+/*
+trait HasDuration {
+    fn duration(&self);
+}
+
+struct TimeSegment {
+    SystemTime begin, end;
+}
+
+struct Timer {
+    Vec<TimeSegment>; // store time segments
+}
+*/
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Task {
     id: i32,
+    // TODO: replace with Timer
 }
 
 #[get("/")]
@@ -108,8 +101,24 @@ fn posted() {
     println!("Posted /post!");
 }
 
+#[catch(404)]
+fn not_found() -> JsonValue {
+    json!({
+        "status": "error",
+        "reason": "Resource was not found."
+    })
+}
+
+/*
+fn rocket() -> rocket::Rocket {
+    rocket::ignite()
+        .mount("/message", routes![new, update, get])
+        .register(catchers![not_found])
+        .manage(Mutex::new(HashMap::<ID, String>::new()))
+}
+*/
+
 fn main() {
     rocket::ignite().mount("/", routes![index]).launch();
 }
-*/
 
