@@ -1,55 +1,19 @@
+extern crate chrono;
+use chrono::{Utc};
+
+pub mod time_handler;
+use crate::time_handler::HasDuration;
+use crate::time_handler::TimeSegment;
+
+fn main() {
+    let begin = Utc::now();
+    let seg = TimeSegment { begin, end: Utc::now() };
+    println!("Got duration {:?}", seg.duration());
+    let seg = TimeSegment { begin, end: Utc::now() };
+    println!("Got duration {:?}", seg.duration());
+}
+
 /*
-
-// The type to represent the ID of a message.
-type ID = usize;
-
-// We're going to store all of the messages here. No need for a DB.
-type MessageMap = Mutex<HashMap<ID, String>>;
-
-#[derive(Serialize, Deserialize)]
-struct Message {
-    id: Option<ID>,
-    contents: String
-}
-
-#[post("/<id>", format = "json", data = "<message>")]
-fn new(id: ID, message: Json<Message>, map: State<MessageMap>) -> JsonValue {
-    let mut hashmap = map.lock().expect("map lock.");
-    if hashmap.contains_key(&id) {
-        json!({
-            "status": "error",
-            "reason": "ID exists. Try put."
-        })
-    } else {
-        hashmap.insert(id, message.0.contents);
-        json!({ "status": "ok" })
-    }
-}
-
-#[put("/<id>", format = "json", data = "<message>")]
-fn update(id: ID, message: Json<Message>, map: State<MessageMap>) -> Option<JsonValue> {
-    let mut hashmap = map.lock().unwrap();
-    if hashmap.contains_key(&id) {
-        hashmap.insert(id, message.0.contents);
-        Some(json!({ "status": "ok" }))
-    } else {
-        None
-    }
-}
-
-#[get("/<id>", format = "json")]
-fn get(id: ID, map: State<MessageMap>) -> Option<Json<Message>> {
-    let hashmap = map.lock().unwrap();
-    hashmap.get(&id).map(|contents| {
-        Json(Message {
-            id: Some(id),
-            contents: contents.clone()
-        })
-    })
-}
-
-*/
-
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
@@ -60,33 +24,9 @@ use std::sync::Mutex;
 use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
 
-extern crate chrono;
-use chrono::{DateTime, Utc};
-
 use std::collections::HashMap;
 use std::vec;
-
-trait HasDuration {
-    fn duration(&self);
-}
-
-#[derive(Debug)]
-struct TimeSegment {
-    begin: DateTime<Utc>,
-    end: DateTime<Utc>,
-}
-
-impl TimeSegment {
-    pub fn new(begin: DateTime<Utc>, end: DateTime<Utc>) -> TimeSegment {
-        TimeSegment { begin, end }
-    }
-}
-
-impl HasDuration for TimeSegment {
-    fn duration(&self) {
-        println!("Duration goes here.");
-    }
-}
+*/
 
 /*
 
@@ -141,10 +81,54 @@ fn main() {
 }
 */
 
-fn main() {
-    let utc: DateTime<Utc> = Utc::now();
-    let mut first_seg = TimeSegment { begin: utc, end: utc };
-    first_seg.duration();
-    //let mut seg: TimeSegment = TimeSegment::new( utc, utc );
+/*
+
+// The type to represent the ID of a message.
+type ID = usize;
+
+// We're going to store all of the messages here. No need for a DB.
+type MessageMap = Mutex<HashMap<ID, String>>;
+
+#[derive(Serialize, Deserialize)]
+struct Message {
+    id: Option<ID>,
+    contents: String
 }
 
+#[post("/<id>", format = "json", data = "<message>")]
+fn new(id: ID, message: Json<Message>, map: State<MessageMap>) -> JsonValue {
+    let mut hashmap = map.lock().expect("map lock.");
+    if hashmap.contains_key(&id) {
+        json!({
+            "status": "error",
+            "reason": "ID exists. Try put."
+        })
+    } else {
+        hashmap.insert(id, message.0.contents);
+        json!({ "status": "ok" })
+    }
+}
+
+#[put("/<id>", format = "json", data = "<message>")]
+fn update(id: ID, message: Json<Message>, map: State<MessageMap>) -> Option<JsonValue> {
+    let mut hashmap = map.lock().unwrap();
+    if hashmap.contains_key(&id) {
+        hashmap.insert(id, message.0.contents);
+        Some(json!({ "status": "ok" }))
+    } else {
+        None
+    }
+}
+
+#[get("/<id>", format = "json")]
+fn get(id: ID, map: State<MessageMap>) -> Option<Json<Message>> {
+    let hashmap = map.lock().unwrap();
+    hashmap.get(&id).map(|contents| {
+        Json(Message {
+            id: Some(id),
+            contents: contents.clone()
+        })
+    })
+}
+
+*/
