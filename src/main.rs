@@ -61,19 +61,31 @@ use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
 
 extern crate chrono;
-use chrono::DateTime;
+use chrono::{DateTime, Utc};
 
 use std::collections::HashMap;
 use std::vec;
 
-/*
 trait HasDuration {
     fn duration(&self);
 }
 
+#[derive(Debug)]
 struct TimeSegment {
-    DateTime<Utc>: begin,
-    DateTime<Utc>: end,
+    begin: DateTime<Utc>,
+    end: DateTime<Utc>,
+}
+
+impl TimeSegment {
+    pub fn new(begin: DateTime<Utc>, end: DateTime<Utc>) -> TimeSegment {
+        TimeSegment { begin, end }
+    }
+}
+
+impl HasDuration for TimeSegment {
+    fn duration(&self) {
+        println!("Duration goes here.");
+    }
 }
 
 /*
@@ -83,6 +95,7 @@ struct Timer {
 }
 */
 
+/*
 #[derive(Serialize, Deserialize, Debug)]
 struct Task {
     id: i32,
@@ -111,6 +124,7 @@ fn not_found() -> JsonValue {
         "reason": "Resource was not found."
     })
 }
+*/
 
 /*
 fn rocket() -> rocket::Rocket {
@@ -121,7 +135,16 @@ fn rocket() -> rocket::Rocket {
 }
 */
 
+/*
 fn main() {
     rocket::ignite().mount("/", routes![index]).launch();
+}
+*/
+
+fn main() {
+    let utc: DateTime<Utc> = Utc::now();
+    let mut first_seg = TimeSegment { begin: utc, end: utc };
+    first_seg.duration();
+    //let mut seg: TimeSegment = TimeSegment::new( utc, utc );
 }
 
