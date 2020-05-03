@@ -72,8 +72,11 @@ trait HasDuration {
 }
 
 struct TimeSegment {
-    SystemTime begin, end;
+    DateTime<Utc>: begin,
+    DateTime<Utc>: end,
 }
+
+/*
 
 struct Timer {
     Vec<TimeSegment>; // store time segments
