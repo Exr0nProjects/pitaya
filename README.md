@@ -11,11 +11,25 @@ This project is currently in development.
 - [ ] Basic tags
 - [ ] Recursive Tagging
 
+### Time Complexities and Benchmarks
+| Action | Complexity | Benchmark |
+|--------|------------|-----------|
+Start timer | Constant | TBD
+Stop timer | Constant | TBD
+Check timer duration | Constant | TBD
+Add tag to timer | Constant | TBD
+Remove tag from timer | Constant | TBD
+Check total tag time | Constant | TBD
+Sort tags by name | Linearithmic | TBD
+Sort tags by duration | Linearithmic | TBD
+Sort tags by dependancies | Linear | TBD
+
 ## Project Plan
 
 - [ ] Basic time framework
 - [ ] Tags
 	- [ ] Recursive tagging
+	- [ ] Tag coloring by DAG
 	- [ ] Fuzzy search over tag names
 	- [ ] RNN or transformer net? for tag suggestions
 - [ ] Data Visualization
@@ -23,7 +37,13 @@ This project is currently in development.
 		- [ ] Basic
 		- [ ] Set logic with tags
 - [ ] Interface
-	- [ ] CLI, probably with [tui-rs](https://github.com/fdehau/tui-rs)
-	- [ ] Web API with Rocket
-	- [ ] Electron/Ionic app?
+	- Platforms
+		- [ ] CLI, probably with [tui-rs](https://github.com/fdehau/tui-rs)
+		- [ ] Web API with Rocket
+		- [ ] Electron/Ionic app?
+	- Features
+		- [ ] Create/start/stop timers
+		- [ ] Create tags
+		- [ ] Add tag dependencies
+		- [ ] Visualize tag dependencies
 
