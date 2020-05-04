@@ -25,7 +25,6 @@ impl TimeSegment {
 }
 impl HasDuration for TimeSegment {
     fn duration(&self) -> Duration {
-        println!("Duration goes here.");
         self.end - self.begin
     }
 }
@@ -49,6 +48,7 @@ impl Timer {
                 end: Utc::now(),
                 running: true
             });
+            self.running = true;
             self.segments.last()
         } else {
             None
@@ -58,6 +58,7 @@ impl Timer {
         if self.running {
             self.segments.last_mut()?.end = Utc::now();
             self.segments.last_mut()?.running = false;
+            self.running = false;
         }
         self.segments.last()
     }

@@ -11,9 +11,14 @@ fn main() {
     let mut timer = Timer::new();
     // sleep for 10 milis (https://doc.rust-lang.org/std/thread/fn.sleep.html)
     timer.start();
+    thread::sleep(time::Duration::from_millis(500));
+    timer.stop();
+    println!("Duration of timer part 1: {:?}ms", timer.duration().num_milliseconds());
+
+    timer.start();
     thread::sleep(time::Duration::from_millis(1000));
     timer.stop();
-    println!("Duration of timer: {:?}ms", timer.duration().num_milliseconds());
+    println!("Duration of timer part 1: {:?}ms", timer.duration().num_milliseconds());
 }
 
 /*
