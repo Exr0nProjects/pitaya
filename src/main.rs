@@ -1,24 +1,24 @@
 use std::{thread, time};
 
 extern crate chrono;
-use chrono::{Utc};
 
 pub mod time_handler;
-use crate::time_handler::HasDuration;
 use crate::time_handler::Timer;
 
 fn main() {
     let mut timer = Timer::new();
     // sleep for 10 milis (https://doc.rust-lang.org/std/thread/fn.sleep.html)
     timer.start();
-    thread::sleep(time::Duration::from_millis(500));
+    thread::sleep(time::Duration::from_millis(50));
     timer.stop();
-    println!("Duration of timer part 1: {:?}ms", timer.duration().num_milliseconds());
+    println!("Timer part 1: {}", timer);
 
     timer.start();
-    thread::sleep(time::Duration::from_millis(1000));
+    thread::sleep(time::Duration::from_millis(100));
+    println!("Timer part 2: {}", timer);
+    thread::sleep(time::Duration::from_millis(50));
     timer.stop();
-    println!("Duration of timer part 1: {:?}ms", timer.duration().num_milliseconds());
+    println!("Timer part 2: {}", timer);
 }
 
 /*
