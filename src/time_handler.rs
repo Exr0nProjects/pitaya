@@ -94,6 +94,10 @@ impl HasDuration for Timer {
             // TODO: account for duration of curretly running time segment
             duration = duration + segment.duration();
         }
+        if self.segments.last().unwrap().running {
+            let pending: Duration = Utc::now() - self.segments.last().unwrap().begin;
+            duration = duration + pending;
+        }
         duration
     }
 }
