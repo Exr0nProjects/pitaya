@@ -2,6 +2,8 @@ use std::{thread, time};
 
 extern crate chrono;
 
+mod user_handler;
+use crate::user_handler::UserSpace;
 mod time_handler;
 use crate::time_handler::{HasDuration, Timer};
 mod tag_handler;

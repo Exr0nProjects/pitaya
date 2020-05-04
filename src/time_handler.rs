@@ -23,7 +23,7 @@ pub struct TimeSegment {
     pub running: bool,
 }
 impl TimeSegment {
-    pub fn new(begin: DateTime<Utc>, end: DateTime<Utc>) -> TimeSegment {
+    pub fn new(begin: DateTime<Utc>, end: DateTime<Utc>) -> Self {
         TimeSegment { begin, end, id: nanoid!(), running: false }
     }
 }
@@ -55,7 +55,7 @@ pub struct Timer {
     pub running: bool,
 }
 impl Timer {
-    pub fn new() -> Timer {
+    pub fn new() -> Self {
         let id = nanoid!();
         Timer { id, segments: Vec::new(), running: false}
     }
