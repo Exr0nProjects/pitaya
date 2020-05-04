@@ -9,6 +9,8 @@ use nanoid::nanoid;
 
 use serde::{Serialize, Deserialize};
 
+use crate::tag_handler::Tag;
+
 pub trait HasDuration {
     fn duration(&self) -> Duration;
 }
@@ -91,11 +93,10 @@ impl HasDuration for Timer {
     fn duration(&self) -> Duration {
         let mut duration = Duration::zero();
         for segment in &self.segments {
-            // TODO: account for duration of curretly running time segment
             duration = duration + segment.duration();
         }
         if self.segments.last().unwrap().running {
-            let pending: Duration = Utc::now() - self.segments.last().unwrap().begin;
+            let pending = Utc::now() - self.segments.last().unwrap().begin;
             duration = duration + pending;
         }
         duration

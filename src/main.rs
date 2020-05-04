@@ -2,8 +2,10 @@ use std::{thread, time};
 
 extern crate chrono;
 
-pub mod time_handler;
-use crate::time_handler::Timer;
+mod time_handler;
+use crate::time_handler::{HasDuration, Timer};
+mod tag_handler;
+use crate::tag_handler::Tag;
 
 fn main() {
     let mut timer = Timer::new();
