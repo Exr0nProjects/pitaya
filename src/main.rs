@@ -1,11 +1,15 @@
 extern crate chrono;
 use chrono::{Utc};
 
+extern crate nanoid;
+use nanoid::*;
+
 pub mod time_handler;
 use crate::time_handler::HasDuration;
 use crate::time_handler::TimeSegment;
 
 fn main() {
+    println!("nanoid: {:?}", nanoid);
     let begin = Utc::now();
     let seg = TimeSegment { begin, end: Utc::now() };
     println!("Got duration {:?}", seg.duration());
