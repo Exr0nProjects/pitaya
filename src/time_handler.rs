@@ -12,7 +12,9 @@ use serde::{Serialize, Deserialize};
 use crate::tag_handler::Tag;
 
 pub trait HasDuration {
-    fn duration(&self) -> Duration;
+    fn duration() -> &Duration;
+    fn start(&mut self) -> &DateTime<Utc>;
+    fn stop(&mut self) -> &Duration;
 }
 
 #[derive(Serialize, Deserialize, Hash, Debug)]
@@ -20,16 +22,24 @@ pub struct TimeSegment {
     pub id: String,
     pub begin: DateTime<Utc>,
     pub end: DateTime<Utc>,
-    pub running: bool,
+    dura: Duration,
 }
 impl TimeSegment {
     pub fn new(begin: DateTime<Utc>, end: DateTime<Utc>) -> Self {
-        TimeSegment { begin, end, id: nanoid!(), running: false }
+        TimeSegment { begin, end, id: nanoid!(), duration: Duration::zero() }
     }
 }
 impl HasDuration for TimeSegment {
     fn duration(&self) -> Duration {
         self.end - self.begin
+    }
+    fn start(&mut self) -> &DateTime<Utc> {
+        self.running = true;
+        self.begin = Utc::now();
+        &self.begin
+    }
+    fn stop(&mut self) -> &Duration {
+        // TODO
     }
 }
 impl fmt::Display for TimeSegment {
@@ -60,6 +70,7 @@ impl Timer {
         Timer { id, segments: Vec::new(), running: false}
     }
     // TODO: rewrite for concurrency, use RwLock?
+    // TODO: move these methods to impl HasDuration
     pub fn start(&mut self) -> Option<&TimeSegment> {
         if !self.running {
             self.segments.push(TimeSegment{
