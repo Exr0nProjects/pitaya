@@ -6,7 +6,7 @@ A time tracking application built for ergonomics and speed.
 
 ## Status
 
-This project is currently in development.
+This project is currently in development, kinda. I need to figure out how to serde `DateTime::Duration`s, which might involve working on [this issue](https://github.com/chronotope/chrono/issues/117).
 
 ### Features
 - [ ] Minimum Viable Product (click a button to start and stop)
