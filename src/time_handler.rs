@@ -1,4 +1,5 @@
 use std::fmt;
+use time::Duration as StdDuration;
 use std::vec::Vec;
 
 extern crate chrono;
@@ -12,9 +13,9 @@ use serde::{Serialize, Deserialize};
 use crate::tag_handler::Tag;
 
 pub trait HasDuration {
-    fn duration() -> &Duration;
+    fn duration(&self) -> StdDuration;
     fn start(&mut self) -> &DateTime<Utc>;
-    fn stop(&mut self) -> &Duration;
+    fn stop(&mut self) -> StdDuration;
 }
 
 #[derive(Serialize, Deserialize, Hash, Debug)]
@@ -22,24 +23,24 @@ pub struct TimeSegment {
     pub id: String,
     pub begin: DateTime<Utc>,
     pub end: DateTime<Utc>,
-    dura: Duration,
+    dura: StdDuration,
 }
 impl TimeSegment {
     pub fn new(begin: DateTime<Utc>, end: DateTime<Utc>) -> Self {
-        TimeSegment { begin, end, id: nanoid!(), duration: Duration::zero() }
+        TimeSegment { begin, end, id: nanoid!(), dura: StdDuration::zero() }
     }
 }
 impl HasDuration for TimeSegment {
-    fn duration(&self) -> Duration {
+    fn duration(&self) -> StdDuration {
         self.end - self.begin
     }
     fn start(&mut self) -> &DateTime<Utc> {
-        self.running = true;
         self.begin = Utc::now();
         &self.begin
     }
-    fn stop(&mut self) -> &Duration {
-        // TODO
+    fn stop(&mut self) -> StdDuration {
+        self.end = Utc::now();
+        self.duration()
     }
 }
 impl fmt::Display for TimeSegment {
@@ -63,6 +64,7 @@ pub struct Timer {
     pub id: String,
     pub segments: Vec<TimeSegment>,
     pub running: bool,
+    dura: StdDuration,
 }
 impl Timer {
     pub fn new() -> Self {
