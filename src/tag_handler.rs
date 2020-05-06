@@ -1,5 +1,5 @@
 extern crate chrono;
-use chrono::Duration;
+use std::time::Duration as StdDuration;
 
 use crate::time_handler::HasDuration;
 
@@ -9,8 +9,8 @@ pub struct Tag {
      */
 }
 impl HasDuration for Tag {
-    fn duration(&self) -> Duration {
+    fn duration(&self) -> StdDuration {
         // TODO
-        Duration::zero()
+        StdDuration::new(0, 0)
     }
 }
