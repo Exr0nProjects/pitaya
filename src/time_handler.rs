@@ -4,14 +4,12 @@ use std::vec::Vec;
 use std::time::Duration as StdDuration;
 
 extern crate chrono;
-use chrono::{DateTime, Duration, Utc};
+use chrono::{DateTime, Utc};
 
 extern crate nanoid;
 use nanoid::nanoid;
 
 use serde::{Serialize, Deserialize};
-
-use crate::tag_handler::Tag;
 
 pub trait HasDuration {
     fn duration(&self) -> StdDuration;

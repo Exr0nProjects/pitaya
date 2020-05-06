@@ -1,6 +1,10 @@
 extern crate nanoid;
 use nanoid::nanoid;
 
+extern crate fuzzy_matcher;
+use fuzzy_matcher::FuzzyMatcher;
+use fuzzy_matcher::skim::SkimMatcherV2;
+
 use std::vec::Vec;
 
 use crate::time_handler::Timer;
@@ -18,5 +22,9 @@ impl UserSpace {
     pub fn new_timer(&mut self) -> &Timer {
         self.timers.push(Timer::new());
         self.timers.last().unwrap()
+    }
+    pub fn new_tag(&mut self, name: String) -> &Tag {
+        self.tags.push(Tag::new(name));
+        self.tags.last().unwrap()
     }
 }

@@ -5,7 +5,7 @@ extern crate chrono;
 mod user_handler;
 use crate::user_handler::UserSpace;
 mod time_handler;
-use crate::time_handler::{HasDuration, Timer};
+use crate::time_handler::Timer;
 mod tag_handler;
 use crate::tag_handler::Tag;
 
