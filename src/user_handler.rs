@@ -19,6 +19,8 @@ impl UserSpace {
     pub fn new() -> Self {
         UserSpace { id: nanoid!(), timers: Vec::new(), tags: Vec::new() }
     }
+    pub fn timers(&self) -> &Vec<Timer> { &self.timers }
+    pub fn tags(&self) -> &Vec<Tag> { &self.tags }
     pub fn new_timer(&mut self) -> &Timer {
         self.timers.push(Timer::new());
         self.timers.last().unwrap()
