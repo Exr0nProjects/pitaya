@@ -13,7 +13,7 @@ This project is currently in development, kinda. I need to figure out how to ser
 - [ ] Basic tags
 - [ ] Recursive Tagging
 
-### Time Complexities and Benchmarks
+### Performance
 | Action | Complexity | Benchmark |
 |--------|------------|-----------|
 Start timer | Constant | TBD
@@ -25,6 +25,14 @@ Check total tag time | Constant | TBD
 Sort tags by name | Linearithmic | TBD
 Sort tags by duration | Linearithmic | TBD
 Sort tags by dependancies | Linear | TBD
+
+#### Optimizations
+Here are the ideas I'm working with:
+- Lazily evaluate tag duration: traverse new timers since previous "sync" when data is dumped
+	- This reduces the overhead needed to start/stop timers
+- Optimize graph representation for cache size, perhaps employ some of the techniques seen
+[here](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.11.3433&rep=rep1&type=pdf)
+	- How to store tag DAG? Contiguous vector, separated into chunks and a hashmap of iterators?
 
 ## Project Plan
 
