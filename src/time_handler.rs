@@ -2,12 +2,10 @@ use std::fmt;
 use std::vec::Vec;
 
 use std::time::Duration as StdDuration;
+use crate::IdGenerator;
 
 extern crate chrono;
 use chrono::{DateTime, Utc};
-
-extern crate nanoid;
-use nanoid::nanoid;
 
 use serde::{Serialize, Deserialize};
 
@@ -17,13 +15,13 @@ pub trait HasDuration {
 
 #[derive(Serialize, Deserialize, Hash, Debug)]
 pub struct TimeSegment {
-    pub id: String,
+    pub id: u64,
     pub begin: DateTime<Utc>,
     pub end: Option<DateTime<Utc>>,
 }
 impl TimeSegment {
-    pub fn new() -> Self {
-        TimeSegment { begin: Utc::now(), end: None, id: nanoid!() }
+    pub fn new(id: u64) -> Self {
+        TimeSegment { begin: Utc::now(), end: None, id }
     }
     pub fn stop(&mut self) -> StdDuration {
         self.end = Some(Utc::now());
@@ -42,7 +40,7 @@ impl TimeSegment {
     impl fmt::Display for TimeSegment {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             write!(f, "TimeSegment {{ {} : {} -> {} }}",
-                   &self.id[0..6],
+                   self.id%1000,
                    self.begin.to_rfc2822(),
                    match self.end {
                        Some(end) => end.to_rfc2822(),
@@ -61,20 +59,19 @@ impl TimeSegment {
 
 #[derive(Serialize, Deserialize, Hash, Debug)]
 pub struct Timer {
-    pub id: String,
+    pub id: u64,
     pub segments: Vec<TimeSegment>,
     pub running: bool,
     duration: StdDuration,
 }
 impl Timer {
-    pub fn new() -> Self {
-        let id = nanoid!();
+    pub fn new(id: u64) -> Self {
         Timer { id, segments: Vec::new(), running: false, duration: StdDuration::new(0, 0) }
     }
     // TODO: rewrite for concurrency, use RwLock?
-    pub fn start(&mut self) -> Option<&TimeSegment> {
+    pub fn start(&mut self, id: u64) -> Option<&TimeSegment> {
         if !self.running {
-            self.segments.push(TimeSegment::new());
+            self.segments.push(TimeSegment::new(id));
             self.running = true;
             self.segments.last()
         } else {
@@ -109,7 +106,7 @@ impl Timer {
     impl fmt::Display for Timer {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             write!(f, "Timer {{ {} for {}{}ms }}",
-                   &self.id[0..6],
+                   self.id % 1000,
                    self.duration().as_millis(),
                    if self.running { ".." } else { "" }
                )

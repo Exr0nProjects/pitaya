@@ -9,15 +9,29 @@ use crate::time_handler::Timer;
 mod tag_handler;
 use crate::tag_handler::Tag;
 
+use rand_chacha::{ChaCha20Rng, rand_core::{SeedableRng, RngCore}};
+struct IdGenerator {
+    generator: ChaCha20Rng,
+}
+impl IdGenerator {
+    pub fn new() -> Self {
+        IdGenerator { generator: ChaCha20Rng::from_entropy() }
+    }
+    pub fn next(&mut self) -> u64 {
+        self.generator.next_u64()
+    }
+}
+
 fn main() {
-    let mut timer = Timer::new();
+    let mut id_gen = IdGenerator::new();
+    let mut timer = Timer::new(id_gen.next());
     // sleep for 10 milis (https://doc.rust-lang.org/std/thread/fn.sleep.html)
-    timer.start();
+    timer.start(id_gen.next());
     thread::sleep(time::Duration::from_millis(50));
     timer.stop();
     println!("Timer part 1: {}", timer);
 
-    timer.start();
+    timer.start(id_gen.next());
     thread::sleep(time::Duration::from_millis(100));
     println!("Timer part 2: {}", timer);
     thread::sleep(time::Duration::from_millis(50));
