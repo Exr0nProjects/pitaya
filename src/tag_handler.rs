@@ -4,6 +4,12 @@ use std::time::Duration as StdDuration;
 
 use crate::time_handler::HasDuration;
 
+pub trait Collectable {
+    type Attr;
+    fn new() -> Self;
+    fn collect(&mut self, other: Collectable);
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct Tag {
     /* TODO
