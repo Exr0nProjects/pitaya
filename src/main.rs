@@ -3,29 +3,11 @@ use std::{thread, time};
 extern crate chrono;
 
 mod user_handler;
-use crate::user_handler::UserSpace;
+use crate::user_handler::{UserSpace, IdGenerator};
 mod time_handler;
 use crate::time_handler::Timer;
 mod tag_handler;
 use crate::tag_handler::Tag;
-
-use rand_chacha::{ChaCha20Rng, rand_core::{SeedableRng, RngCore}};
-struct IdGenerator {
-    generator: ChaCha20Rng,
-}
-impl IdGenerator {
-    pub fn new() -> Self {
-        IdGenerator { generator: ChaCha20Rng::from_entropy() }
-    }
-    pub fn next(&mut self) -> u64 {
-        self.generator.next_u64()
-    }
-}
-impl std::default::Default for IdGenerator {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 
 fn main() {
     let mut id_gen = IdGenerator::new();

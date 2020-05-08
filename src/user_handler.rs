@@ -8,7 +8,34 @@ use std::vec::Vec;
 
 use crate::time_handler::Timer;
 use crate::tag_handler::Tag;
-use crate::IdGenerator;
+
+use std::fmt;
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, Hash, PartialEq)]
+pub struct Id(pub u64);
+impl fmt::Display for Id {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let Id(disp) = self;
+        write!(f, "{}", disp % 10000)
+    }
+}
+use rand_chacha::{ChaCha20Rng, rand_core::{SeedableRng, RngCore}};
+pub struct IdGenerator {
+    generator: ChaCha20Rng,
+}
+impl IdGenerator {
+    pub fn new() -> Self {
+        IdGenerator { generator: ChaCha20Rng::from_entropy() }
+    }
+    pub fn next(&mut self) -> Id {
+        Id(self.generator.next_u64())
+    }
+}
+impl std::default::Default for IdGenerator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 
 #[derive(Serialize, Deserialize)]
 pub struct UserSpace {
