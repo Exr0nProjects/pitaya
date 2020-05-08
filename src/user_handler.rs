@@ -20,23 +20,27 @@ impl fmt::Display for Id {
     }
 }
 use rand_chacha::{ChaCha20Rng, rand_core::{SeedableRng, RngCore}};
-pub struct IdGenerator {
+pub struct IdGen {
     generator: ChaCha20Rng,
 }
-impl IdGenerator {
+impl IdGen {
     pub fn new() -> Self {
-        IdGenerator { generator: ChaCha20Rng::from_entropy() }
+        IdGen { generator: ChaCha20Rng::from_entropy() }
     }
     pub fn next(&mut self) -> Id {
         Id(self.generator.next_u64())
     }
 }
-impl std::default::Default for IdGenerator {
+impl std::default::Default for IdGen {
     fn default() -> Self {
         Self::new()
     }
 }
-
+impl core::ops::FnMut<()> for IdGen {
+    extern "rust-call" fn call_mut(&mut self, args: ()) -> () {
+        self.next()
+    }
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct UserSpace {

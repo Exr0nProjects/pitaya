@@ -1,3 +1,4 @@
+#![feature(fn_traits, unboxed_closures)]
 use std::{thread, time};
 
 extern crate chrono;
