@@ -10,6 +10,9 @@ mod tag_handler;
 use crate::tag_handler::Tag;
 
 fn main() {
+    let mut user = UserSpace::new();
+    let timer1 = user.new_timer();
+    timer1.start();
     let mut id_gen = IdGenerator::new();
     let mut timer = Timer::new(id_gen.next());
     // sleep for 10 milis (https://doc.rust-lang.org/std/thread/fn.sleep.html)

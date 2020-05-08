@@ -5,6 +5,7 @@ use fuzzy_matcher::FuzzyMatcher;
 use fuzzy_matcher::skim::SkimMatcherV2;
 
 use std::vec::Vec;
+use std::sync::{Arc, RwLock};
 
 use crate::time_handler::Timer;
 use crate::tag_handler::Tag;
@@ -46,7 +47,11 @@ pub struct UserSpace {
 }
 impl UserSpace {
     pub fn new() -> Self {
-        UserSpace { id_gen: IdGenerator::new(), timers: Vec::new(), tags: Vec::new() }
+        UserSpace {
+            id_gen: IdGenerator::new(),
+            timers: Vec::new(),
+            tags: Vec::new(),
+        }
     }
     pub fn timers(&self) -> &Vec<Timer> { &self.timers }
     pub fn tags(&self) -> &Vec<Tag> { &self.tags }
@@ -64,5 +69,10 @@ impl UserSpace {
          * 2. go through timers that need syncing, traverse tag tree and add to their deque
          * 3. parallelize: for each tag add all the accumulatables (time and count for now)
          */
+    }
+}
+impl std::default::Default for UserSpace {
+    fn default() -> Self {
+        Self::new()
     }
 }
