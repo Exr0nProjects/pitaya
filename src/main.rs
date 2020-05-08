@@ -1,10 +1,9 @@
-#![feature(fn_traits, unboxed_closures)]
 use std::{thread, time};
 
 extern crate chrono;
 
 mod user_handler;
-use crate::user_handler::{UserSpace, IdGenerator};
+use crate::user_handler::UserSpace;
 mod time_handler;
 use crate::time_handler::Timer;
 mod tag_handler;
@@ -12,22 +11,19 @@ use crate::tag_handler::Tag;
 
 fn main() {
     let mut user = UserSpace::new();
-    let timer1 = user.new_timer();
+    let mut timer1 = user.new_timer("Timer".to_string());
     timer1.start();
-    let mut id_gen = IdGenerator::new();
-    let mut timer = Timer::new(id_gen.next());
     // sleep for 10 milis (https://doc.rust-lang.org/std/thread/fn.sleep.html)
-    timer.start(id_gen.next());
     thread::sleep(time::Duration::from_millis(50));
-    timer.stop();
-    println!("Timer part 1: {}", timer);
+    timer1.stop();
+    println!("Timer part 1: {}", timer1);
 
-    timer.start(id_gen.next());
+    timer1.start();
     thread::sleep(time::Duration::from_millis(100));
-    println!("Timer part 2: {}", timer);
+    println!("Timer part 2: {}", timer1);
     thread::sleep(time::Duration::from_millis(50));
-    timer.stop();
-    println!("Timer part 2: {}", timer);
+    timer1.stop();
+    println!("Timer part 2: {}", timer1);
 }
 
 /*

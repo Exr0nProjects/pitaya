@@ -3,7 +3,7 @@ use std::vec::Vec;
 
 use std::time::Duration as StdDuration;
 use std::sync::RwLock;
-use crate::user_handler::{UserSpace, Id, IdGen};
+use crate::user_handler::{UserSpace, Id};
 
 extern crate chrono;
 use chrono::{DateTime, Utc};
@@ -21,8 +21,8 @@ pub struct TimeSegment {
     pub end: Option<DateTime<Utc>>,
 }
 impl TimeSegment {
-    pub fn new(id: Id) -> Self {
-        TimeSegment { begin: Utc::now(), end: None, id }
+    pub fn new() -> Self {
+        TimeSegment { begin: Utc::now(), end: None, id: Id::new() }
     }
     pub fn stop(&mut self) -> StdDuration {
         self.end = Some(Utc::now());
@@ -69,7 +69,7 @@ pub struct Timer {
 impl Timer {
     pub fn new(name: String) -> Self {
         Timer {
-            id: IdGen::new()(),
+            id: Id::new(),
             name,
             segments: Vec::new(),
             running: false,
@@ -77,9 +77,9 @@ impl Timer {
         }
     }
     // TODO: rewrite for concurrency, use RwLock?
-    pub fn start(&mut self, id: Id) -> Option<&TimeSegment> {
+    pub fn start(&mut self) -> Option<&TimeSegment> {
         if !self.running {
-            self.segments.push(TimeSegment::new(id));
+            self.segments.push(TimeSegment::new());
             self.running = true;
             self.segments.last()
         } else {

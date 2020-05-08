@@ -19,8 +19,8 @@ pub struct Tag {
     pub name: String,
 }
 impl Tag {
-    pub fn new(id: Id, name: String) -> Self {
-        Tag { id, name }
+    pub fn new(name: String) -> Self {
+        Tag { id: Id::new(), name }
     }
 }
 impl HasDuration for Tag {
