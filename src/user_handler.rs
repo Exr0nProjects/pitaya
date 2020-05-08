@@ -1,5 +1,4 @@
-extern crate nanoid;
-use nanoid::nanoid;
+use serde::{Serialize, Deserialize};
 
 extern crate fuzzy_matcher;
 use fuzzy_matcher::FuzzyMatcher;
@@ -11,7 +10,9 @@ use crate::time_handler::Timer;
 use crate::tag_handler::Tag;
 use crate::IdGenerator;
 
+#[derive(Serialize, Deserialize)]
 pub struct UserSpace {
+    #[serde(skip)]
     id_gen: IdGenerator,
     timers: Vec<Timer>,
     tags: Vec<Tag>,
@@ -27,7 +28,14 @@ impl UserSpace {
         self.timers.last().unwrap()
     }
     pub fn new_tag(&mut self, name: String) -> &Tag {
-        self.tags.push(Tag::new(name));
+        self.tags.push(Tag::new(self.id_gen.next(), name));
         self.tags.last().unwrap()
+    }
+    pub fn get_stats(&mut self) {
+        /* TODO
+         * 1. store two vectors or deques of timers, one that needs syncing and one that doesn't
+         * 2. go through timers that need syncing, traverse tag tree and add to their deque
+         * 3. parallelize: for each tag add all the accumulatables (time and count for now)
+         */
     }
 }

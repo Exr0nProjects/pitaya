@@ -1,20 +1,20 @@
-extern crate nanoid;
-use nanoid::nanoid;
+use serde::{Serialize, Deserialize};
 
 use std::time::Duration as StdDuration;
 
 use crate::time_handler::HasDuration;
 
+#[derive(Serialize, Deserialize)]
 pub struct Tag {
     /* TODO
      * implement all the tag stuff
      */
-    pub id: String,
+    pub id: u64,
     pub name: String,
 }
 impl Tag {
-    pub fn new(name: String) -> Self {
-        Tag { id: nanoid!(), name }
+    pub fn new(id: u64, name: String) -> Self {
+        Tag { id, name }
     }
 }
 impl HasDuration for Tag {

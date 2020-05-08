@@ -21,6 +21,11 @@ impl IdGenerator {
         self.generator.next_u64()
     }
 }
+impl std::default::Default for IdGenerator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 fn main() {
     let mut id_gen = IdGenerator::new();
