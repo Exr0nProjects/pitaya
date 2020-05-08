@@ -10,6 +10,11 @@ pub trait Collectable {
     fn collect(&mut self, other: Collectable);
 }
 
+use std::collections::BTreeMap;
+pub struct Collection {
+    attrs: BTreeMap::<u64, f64>,
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct Tag {
     /* TODO
