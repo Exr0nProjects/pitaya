@@ -1,3 +1,4 @@
+#![feature(test)]
 use std::{thread, time};
 
 extern crate chrono;
@@ -24,6 +25,28 @@ fn main() {
     thread::sleep(time::Duration::from_millis(50));
     timer1.stop();
     println!("Timer part 2: {}", timer1);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    extern crate test;
+    use test::Bencher;
+
+    #[test]
+    fn legit() {
+        assert_eq!(1, 1);
+    }
+
+    #[bench]
+    fn bench(b: &mut Bencher) {
+        let mut user = UserSpace::new();
+        let mut timer = user.new_timer("timer".to_string());
+        b.iter(|| {
+            timer.start();
+            timer.stop();
+        });
+    }
 }
 
 /*

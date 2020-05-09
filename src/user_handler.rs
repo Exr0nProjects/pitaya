@@ -11,13 +11,15 @@ use crate::time_handler::Timer;
 use crate::tag_handler::Tag;
 
 use std::fmt;
-use rand_chacha::{ChaCha20Rng, rand_core::{SeedableRng, RngCore}};
+use rand_chacha::{ChaCha8Rng, rand_core::{SeedableRng, RngCore}};
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, Hash, PartialEq)]
 pub struct Id(pub u64);
 impl Id {
     pub fn new() -> Self {
-        Self(ChaCha20Rng::from_entropy().next_u64())
-        //Self(42)
+        //Self(ChaCha20Rng::from_entropy().next_u64()) // avg 820±20 ns/iter
+        Self(ChaCha8Rng::from_entropy().next_u64()) // avg 745±20 ns/iter
+        //Self(StdRng::from_entropy().next_u64()) // avg 820±20 ns/iter
+        //Self(42) // avg 120±20 ns/iter
     }
 }
 impl fmt::Display for Id {
