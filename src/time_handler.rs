@@ -1,5 +1,9 @@
-use std::fmt;
-use std::vec::Vec;
+use std::{
+    fmt,
+    vec::Vec,
+    collections::HashSet,
+    sync::mpsc::Sender,
+}
 
 use std::time::Duration as StdDuration;
 use std::sync::RwLock;
@@ -60,20 +64,24 @@ impl TimeSegment {
 
 #[derive(Serialize, Deserialize, Hash, Debug)]
 pub struct Timer {
-    pub id: Id,
+    id: Id,
     pub name: String,
-    pub segments: Vec<TimeSegment>,
-    pub running: bool,
-    duration: StdDuration,
+    pub tags: HashSet<Id>,
+    segments: Vec<TimeSegment>,
+    running: bool,
+    stats: Stats,
+    tag_tx: Sender<(&Id, &Stats)>,
 }
 impl Timer {
-    pub fn new(name: String) -> Self {
+    pub fn new(name: String, tag_tx: Sender<(&Id, &Stats)>) -> Self {
         Timer {
             id: Id::new(),
             name,
+            tags: HashSet::new(),
             segments: Vec::new(),
             running: false,
-            duration: StdDuration::new(0, 0)
+            stats: Stats::new(),
+            tag_tx,
         }
     }
     // TODO: rewrite for concurrency, use RwLock?
@@ -89,9 +97,11 @@ impl Timer {
     pub fn stop(&mut self) -> Option<StdDuration> {
         if self.running {
             self.running = false;
-            Some(self.segments.last_mut()?.stop())
+            for tag_id in self.tags {
+
+            Some(self.segments.last()?.stop())
         } else {
-            Some(self.segments.last()?.duration())
+            None
         }
     }
     pub fn list_timers(&self) {
@@ -99,6 +109,15 @@ impl Timer {
         for segment in &self.segments {
             println!("    {}", segment);
         }
+    }
+    pub fn id(&self) -> &Id {
+        self.id
+    }
+    pub fn segments(&self) -> &Vec<TimeSegment> {
+        self.segments
+    }
+    pub fn running(&self) -> &bool {
+        self.running
     }
 }
     // trait impls
