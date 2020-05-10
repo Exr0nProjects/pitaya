@@ -16,10 +16,7 @@ use rand_chacha::{ChaCha8Rng, rand_core::{SeedableRng, RngCore}};
 pub struct Id(pub u64);
 impl Id {
     pub fn new() -> Self {
-        //Self(ChaCha20Rng::from_entropy().next_u64()) // avg 820±20 ns/iter
-        Self(ChaCha8Rng::from_entropy().next_u64()) // avg 745±20 ns/iter
-        //Self(StdRng::from_entropy().next_u64()) // avg 820±20 ns/iter
-        //Self(42) // avg 120±20 ns/iter
+        Self(ChaCha8Rng::from_entropy().next_u64()) // costs roughly 600ns over constant
     }
 }
 impl fmt::Display for Id {

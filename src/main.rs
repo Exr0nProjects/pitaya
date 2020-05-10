@@ -41,8 +41,8 @@ mod tests {
     #[bench]
     fn bench(b: &mut Bencher) {
         let mut user = UserSpace::new();
-        let mut timer = user.new_timer("timer".to_string());
-        b.iter(|| {
+        let timer = user.new_timer("timer".to_string());
+        b.iter(move|| {
             timer.start();
             timer.stop();
         });
