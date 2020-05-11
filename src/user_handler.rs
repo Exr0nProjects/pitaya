@@ -4,11 +4,22 @@ extern crate fuzzy_matcher;
 use fuzzy_matcher::FuzzyMatcher;
 use fuzzy_matcher::skim::SkimMatcherV2;
 
-use std::vec::Vec;
-use std::sync::{Arc, RwLock};
+use std::{
+    vec::Vec,
+    sync::{
+        Arc,
+        RwLock,
+        mpsc::{
+            channel,
+            Sender,
+        },
+    },
+    thread,
+};
 
 use crate::time_handler::Timer;
 use crate::tag_handler::Tag;
+use crate::stats::Stats;
 
 use std::fmt;
 use rand_chacha::{ChaCha8Rng, rand_core::{SeedableRng, RngCore}};
@@ -27,22 +38,30 @@ impl fmt::Display for Id {
 }
 impl Eq for Id {}
 
-#[derive(Serialize, Deserialize)]
 pub struct UserSpace {
     timers: Vec<Timer>,
     tags: Vec<Tag>,
+    tag_tx: Sender<(Id, Arc<Stats>)>,
 }
 impl UserSpace {
     pub fn new() -> Self {
+        let (tx, rx) = channel();
+
+        thread::spawn(move|| {
+            // TODO: write processor thread logic: recieve requests, buffer, update tag stats
+            // TODO: refactor elsewhere
+        });
+
         UserSpace {
             timers: Vec::new(),
             tags: Vec::new(),
+            tag_tx: tx,
         }
     }
     pub fn timers(&self) -> &Vec<Timer> { &self.timers }
     pub fn tags(&self) -> &Vec<Tag> { &self.tags }
     pub fn new_timer(&mut self, name: String) -> &mut Timer {
-        self.timers.push(Timer::new(name));
+        self.timers.push(Timer::new(name, self.tag_tx.clone()));
         self.timers.last_mut().unwrap()
     }
     pub fn new_tag(&mut self, name: String) -> &Tag {

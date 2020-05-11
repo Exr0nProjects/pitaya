@@ -1,5 +1,3 @@
-use serde::{Serialize, Deserialize};
-
 use std::time::Duration as StdDuration;
 
 use crate::time_handler::HasDuration;
@@ -10,7 +8,6 @@ pub struct Collection {
     attrs: BTreeMap::<Id, f64>,
 }
 
-#[derive(Serialize, Deserialize)]
 pub struct Tag {
     /* TODO
      * implement all the tag stuff

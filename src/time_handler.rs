@@ -6,26 +6,23 @@ use std::{
 };
 
 use std::time::Duration as StdDuration;
-use std::sync::RwLock;
+use std::sync::{Arc, RwLock};
 use crate::user_handler::{UserSpace, Id};
 use crate::stats::Stats;
 
 extern crate chrono;
 use chrono::{DateTime, Utc};
 
-use serde::{Serialize, Deserialize};
-use serde_json;
-
 pub trait HasDuration {
     fn duration(&self) -> StdDuration;
 }
 
-#[derive(Serialize, Deserialize, Hash, Debug)]
+#[derive(Debug)]
 pub struct TimeSegment {
     pub id: Id,
     pub begin: DateTime<Utc>,
     pub end: Option<DateTime<Utc>>,
-    stats: Stats,
+    stats: Arc<Stats>,
 }
 impl TimeSegment {
     pub fn new() -> Self {
@@ -33,7 +30,7 @@ impl TimeSegment {
             begin: Utc::now(),
             end: None,
             id: Id::new(),
-            stats: Stats::new(),
+            stats: Arc::new(Stats::new()),
         }
     }
     pub fn stop(&mut self) -> StdDuration {
@@ -70,17 +67,17 @@ impl TimeSegment {
     impl Eq for TimeSegment {}
 
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Debug)]
 pub struct Timer {
     id: Id,
     pub name: String,
     pub tags: HashSet<Id>,  // TODO: how to hash?
     segments: Vec<TimeSegment>,
     running: bool,
-    tag_tx: Sender<(&Id, &Stats)>,
+    tag_tx: Sender<(Id, Arc<Stats>)>,
 }
 impl Timer {
-    pub fn new(name: String, tag_tx: Sender<(&Id, &Stats)>) -> Self {
+    pub fn new(name: String, tag_tx: Sender<(Id, Arc<Stats>)>) -> Self {
         Timer {
             id: Id::new(),
             name,
@@ -103,11 +100,11 @@ impl Timer {
     pub fn stop(&mut self) -> Option<StdDuration> {
         if self.running {
             self.running = false;
-            let last = self.segments.last()?;
+            let last = self.segments.last_mut()?;
             let dura = last.stop();
 
             for tag_id in self.tags.iter() {
-                self.tag_tx.send((tag_id, &last.stats));
+                self.tag_tx.send((tag_id.clone(), last.stats.clone()));
             }
 
             Some(dura)
