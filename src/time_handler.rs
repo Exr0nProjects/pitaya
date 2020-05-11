@@ -3,7 +3,7 @@ use std::{
     vec::Vec,
     collections::HashSet,
     sync::mpsc::Sender,
-}
+};
 
 use std::time::Duration as StdDuration;
 use std::sync::RwLock;
@@ -98,6 +98,8 @@ impl Timer {
         if self.running {
             self.running = false;
             for tag_id in self.tags {
+                self.tag_tx.send(tag_id, &self.segments.last()?.stats);
+            }
 
             Some(self.segments.last()?.stop())
         } else {

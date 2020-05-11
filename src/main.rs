@@ -9,6 +9,8 @@ mod time_handler;
 use crate::time_handler::Timer;
 mod tag_handler;
 use crate::tag_handler::Tag;
+mod stats;
+use crate::stats::Stats;
 
 fn main() {
     let mut user = UserSpace::new();
