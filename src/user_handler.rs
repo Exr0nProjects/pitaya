@@ -7,12 +7,8 @@ use fuzzy_matcher::skim::SkimMatcherV2;
 use std::{
     vec::Vec,
     sync::{
-        Arc,
         RwLock,
-        mpsc::{
-            channel,
-            Sender,
-        },
+        mpsc::{channel, Sender, Receiver},
     },
     thread,
 };
@@ -38,19 +34,28 @@ impl fmt::Display for Id {
 }
 impl Eq for Id {}
 
+fn tag_worker(rx: Receiver<(Id, Stats)>)
+{
+    // TODO: write processor thread logic: recieve requests, update tag stats
+    // TODO: buffer incoming requests
+    // TODO: refactor elsewhere
+    thread::spawn(move|| {
+        for (tag_id, stats) in rx.iter() {
+            println!("Requested to add stats {:?} to tag {}", stats, tag_id);
+        }
+    });
+}
+
 pub struct UserSpace {
     timers: Vec<Timer>,
     tags: Vec<Tag>,
-    tag_tx: Sender<(Id, Arc<Stats>)>,
+    tag_tx: Sender<(Id, Stats)>,
 }
 impl UserSpace {
     pub fn new() -> Self {
         let (tx, rx) = channel();
 
-        thread::spawn(move|| {
-            // TODO: write processor thread logic: recieve requests, buffer, update tag stats
-            // TODO: refactor elsewhere
-        });
+        tag_worker(rx);
 
         UserSpace {
             timers: Vec::new(),

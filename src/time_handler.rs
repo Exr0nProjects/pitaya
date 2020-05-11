@@ -22,7 +22,7 @@ pub struct TimeSegment {
     pub id: Id,
     pub begin: DateTime<Utc>,
     pub end: Option<DateTime<Utc>>,
-    stats: Arc<Stats>,
+    stats: Stats,
 }
 impl TimeSegment {
     pub fn new() -> Self {
@@ -30,7 +30,7 @@ impl TimeSegment {
             begin: Utc::now(),
             end: None,
             id: Id::new(),
-            stats: Arc::new(Stats::new()),
+            stats: Stats::new(),
         }
     }
     pub fn stop(&mut self) -> StdDuration {
@@ -74,10 +74,10 @@ pub struct Timer {
     pub tags: HashSet<Id>,  // TODO: how to hash?
     segments: Vec<TimeSegment>,
     running: bool,
-    tag_tx: Sender<(Id, Arc<Stats>)>,
+    tag_tx: Sender<(Id, Stats)>,
 }
 impl Timer {
-    pub fn new(name: String, tag_tx: Sender<(Id, Arc<Stats>)>) -> Self {
+    pub fn new(name: String, tag_tx: Sender<(Id, Stats)>) -> Self {
         Timer {
             id: Id::new(),
             name,
