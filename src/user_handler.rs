@@ -25,6 +25,7 @@ impl fmt::Display for Id {
         write!(f, "{}", disp % 10000)
     }
 }
+impl Eq for Id {}
 
 #[derive(Serialize, Deserialize)]
 pub struct UserSpace {

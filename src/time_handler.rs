@@ -8,11 +8,13 @@ use std::{
 use std::time::Duration as StdDuration;
 use std::sync::RwLock;
 use crate::user_handler::{UserSpace, Id};
+use crate::stats::Stats;
 
 extern crate chrono;
 use chrono::{DateTime, Utc};
 
 use serde::{Serialize, Deserialize};
+use serde_json;
 
 pub trait HasDuration {
     fn duration(&self) -> StdDuration;
@@ -23,10 +25,16 @@ pub struct TimeSegment {
     pub id: Id,
     pub begin: DateTime<Utc>,
     pub end: Option<DateTime<Utc>>,
+    stats: Stats,
 }
 impl TimeSegment {
     pub fn new() -> Self {
-        TimeSegment { begin: Utc::now(), end: None, id: Id::new() }
+        TimeSegment {
+            begin: Utc::now(),
+            end: None,
+            id: Id::new(),
+            stats: Stats::new(),
+        }
     }
     pub fn stop(&mut self) -> StdDuration {
         self.end = Some(Utc::now());
@@ -62,14 +70,13 @@ impl TimeSegment {
     impl Eq for TimeSegment {}
 
 
-#[derive(Serialize, Deserialize, Hash, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Timer {
     id: Id,
     pub name: String,
-    pub tags: HashSet<Id>,
+    pub tags: HashSet<Id>,  // TODO: how to hash?
     segments: Vec<TimeSegment>,
     running: bool,
-    stats: Stats,
     tag_tx: Sender<(&Id, &Stats)>,
 }
 impl Timer {
@@ -80,7 +87,6 @@ impl Timer {
             tags: HashSet::new(),
             segments: Vec::new(),
             running: false,
-            stats: Stats::new(),
             tag_tx,
         }
     }
@@ -97,11 +103,14 @@ impl Timer {
     pub fn stop(&mut self) -> Option<StdDuration> {
         if self.running {
             self.running = false;
-            for tag_id in self.tags {
-                self.tag_tx.send(tag_id, &self.segments.last()?.stats);
+            let last = self.segments.last()?;
+            let dura = last.stop();
+
+            for tag_id in self.tags.iter() {
+                self.tag_tx.send((tag_id, &last.stats));
             }
 
-            Some(self.segments.last()?.stop())
+            Some(dura)
         } else {
             None
         }
@@ -113,13 +122,13 @@ impl Timer {
         }
     }
     pub fn id(&self) -> &Id {
-        self.id
+        &self.id
     }
     pub fn segments(&self) -> &Vec<TimeSegment> {
-        self.segments
+        &self.segments
     }
     pub fn running(&self) -> &bool {
-        self.running
+        &self.running
     }
 }
     // trait impls
