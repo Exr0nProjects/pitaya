@@ -34,7 +34,7 @@ impl fmt::Display for Id {
 }
 impl Eq for Id {}
 
-fn tag_worker(rx: Receiver<(Id, Stats)>)
+fn spawn_tag_worker(rx: Receiver<(Id, Stats)>)
 {
     // TODO: write processor thread logic: recieve requests, update tag stats
     // TODO: buffer incoming requests
@@ -55,7 +55,7 @@ impl UserSpace {
     pub fn new() -> Self {
         let (tx, rx) = channel();
 
-        tag_worker(rx);
+        spawn_tag_worker(rx);
 
         UserSpace {
             timers: Vec::new(),

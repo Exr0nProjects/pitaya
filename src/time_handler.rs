@@ -104,7 +104,8 @@ impl Timer {
             let dura = last.stop();
 
             for tag_id in self.tags.iter() {
-                self.tag_tx.send((tag_id.clone(), last.stats.clone()));
+                self.tag_tx.send((*tag_id, last.stats.clone()))
+                    .expect("tag worker died");
             }
 
             Some(dura)
@@ -112,6 +113,19 @@ impl Timer {
             None
         }
     }
+    pub fn add_tag(&mut self, tag_id: Id) {
+        match self.tags.get(&tag_id) {
+            Some(_) => (),
+            None => {
+                self.tags.insert(tag_id);
+                for segment in self.segments.iter() {
+                    self.tag_tx.send((tag_id, segment.stats.clone()))
+                        .unwrap();
+                }
+            }
+        }
+    }
+    pub fn remove_tag(tag_id: Id) { /* TODO */ }
     pub fn list_timers(&self) {
         println!("TimeSegments in {}:", self);
         for segment in &self.segments {

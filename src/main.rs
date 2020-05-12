@@ -14,12 +14,14 @@ use crate::stats::Stats;
 
 fn main() {
     let mut user = UserSpace::new();
-    let mut timer1 = user.new_timer("Timer".to_string());
+    let timer1 = user.new_timer("Timer".to_string());
     timer1.start();
     // sleep for 10 milis (https://doc.rust-lang.org/std/thread/fn.sleep.html)
     thread::sleep(time::Duration::from_millis(50));
     timer1.stop();
     println!("Timer part 1: {}", timer1);
+
+    let tag = user.new_tag("Tag".to_string());
 
     timer1.start();
     thread::sleep(time::Duration::from_millis(100));
