@@ -7,7 +7,7 @@ use fuzzy_matcher::skim::SkimMatcherV2;
 use std::{
     vec::Vec,
     sync::{
-        RwLock,
+        Arc, RwLock,
         mpsc::{channel, Sender, Receiver},
     },
     thread,
@@ -47,8 +47,8 @@ fn spawn_tag_worker(rx: Receiver<(Id, Stats)>)
 }
 
 pub struct UserSpace {
-    timers: Vec<Timer>,
-    tags: Vec<Tag>,
+    timers: Vec<Arc<RwLock<Timer>>>,
+    tags: Vec<Arc<RwLock<Tag>>>,
     tag_tx: Sender<(Id, Stats)>,
 }
 impl UserSpace {
@@ -58,8 +58,8 @@ impl UserSpace {
         spawn_tag_worker(rx);
 
         UserSpace {
-            timers: Vec::new(),
-            tags: Vec::new(),
+            timers: Vec::<Arc<RwLock<Timer>>>::new(),
+            tags: Vec::<Arc<RwLock<Tag>>>::new(),
             tag_tx: tx,
         }
     }
