@@ -16,7 +16,6 @@ use chrono::{DateTime, Utc};
 pub trait HasDuration {
     fn duration(&self) -> StdDuration;
 }
-
 #[derive(Debug)]
 pub struct TimeSegment {
     pub id: Id,
